@@ -19,12 +19,12 @@ $(document).ready(function () {
                 "Cidade": $(this).find("#Cidade").val(),
                 "Logradouro": $(this).find("#Logradouro").val(),
                 "Telefone": $(this).find("#Telefone").val(),
-                "CPF": "111.222.333-45"
+                "CPF": $(this).find("#CPF").val()
             },
             error:
             function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                if (r.status == 400 || r.status == 409)
+                    ModalDialog("Ocorreu um erro", r.responseJSON);    
                 else if (r.status == 500)
                     ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
             },

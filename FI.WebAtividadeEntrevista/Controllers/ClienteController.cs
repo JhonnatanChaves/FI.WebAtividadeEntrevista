@@ -39,6 +39,13 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
+
+                if (bo.VerificarExistencia(model.CPF))
+                {
+                    Response.StatusCode = 409;
+
+                    return Json("CPF já possui cadastro!");
+                }
                 
                 model.Id = bo.Incluir(new Cliente()
                 {                    
@@ -75,6 +82,13 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
+                if (bo.VerificarExistencia(model.CPF))
+                {
+                    Response.StatusCode = 409;
+
+                    return Json("CPF já possui cadastro!");
+                }
+
                 bo.Alterar(new Cliente()
                 {
                     Id = model.Id,
@@ -86,7 +100,8 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
+                    Telefone = model.Telefone,
+                    CPF = model.CPF
                 });
                                
                 return Json("Cadastro alterado com sucesso");

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FI.WebAtividadeEntrevista.Shared;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -70,8 +71,8 @@ namespace WebAtividadeEntrevista.Models
         /// <summary>
         /// CPF
         /// </summary>
-        [Required(ErrorMessage = "Digite um CPF válido e com formatação")]
-        [RegularExpression("^\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}$")]
+        [Required]        
+        [CustomValidation(typeof(VerificaCPF), nameof(VerificaCPF.ValidarCPF))]
         public string CPF { get; set; }
 
     }    

@@ -33,8 +33,8 @@ $(document).ready(function () {
             },
             error:
             function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                if (r.status == 400 || r.status == 409)
+                    ModalDialog("Ocorreu um erro", r.responseJSON); 
                 else if (r.status == 500)
                     ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
             },
