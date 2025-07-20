@@ -6,8 +6,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: urlPost,
-            method: "POST",   
-            cache: false,
+            method: "POST",               
             data:
             {                     
                 "Nome": $(this).find("#Nome").val(),

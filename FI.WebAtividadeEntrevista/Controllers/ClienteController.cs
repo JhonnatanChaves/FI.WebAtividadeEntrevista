@@ -22,8 +22,7 @@ namespace WebAtividadeEntrevista.Controllers
             return View();
         }
 
-        [HttpPost]
-        [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
+        [HttpPost]        
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
