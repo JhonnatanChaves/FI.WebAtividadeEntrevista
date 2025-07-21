@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FI.AtividadeEntrevista.DAL.Beneficiarios;
+using FI.AtividadeEntrevista.DML;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,7 +68,23 @@ namespace FI.AtividadeEntrevista.BLL
         public List<DML.Cliente> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente, out int qtd)
         {
             DAL.DaoCliente cli = new DAL.DaoCliente();
-            return cli.Pesquisa(iniciarEm,  quantidade, campoOrdenacao, crescente, out qtd);
+            DaoBeneficiario ben = new DaoBeneficiario();
+
+            List<DML.Cliente> listaClientes = cli.Pesquisa(iniciarEm, quantidade, campoOrdenacao, crescente, out qtd);            
+
+            List<Beneficiario> listaBeneficiarios = new List<Beneficiario>();
+
+            listaClientes.ForEach(cliente =>
+            {
+                listaBeneficiarios = ben?.Consultar(cliente.Id);
+                if (listaBeneficiarios.Any())
+                {
+                    cliente.Beneficiarios = listaBeneficiarios;
+                }
+            });
+
+
+            return listaClientes;
         }
 
         /// <summary>
