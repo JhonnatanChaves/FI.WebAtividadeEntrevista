@@ -106,7 +106,10 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                if (bo.VerificarExistencia(model.CPF))
+
+                var cliente = bo.Consultar(model.Id);
+
+                if (bo.VerificarExistencia(model.CPF) && cliente.CPF != model.CPF)
                 {
                     Response.StatusCode = 409;
 
@@ -128,7 +131,22 @@ namespace WebAtividadeEntrevista.Controllers
                     CPF = model.CPF
                 });
 
-                model?.Beneficiarios?.ForEach(b => boBeneficiario.Incluir(new Beneficiario
+                var listaBeneficiarios = boBeneficiario.Consultar(model.Id);
+
+
+                if (model?.Beneficiarios?.Count > 0)
+                {
+                    var cpfsRepetidos = model.Beneficiarios?
+                        .GroupBy(b => b.CPF)
+                        .Where(e => e.Count() > 1)
+                        .Select(g => g.Key)
+                        .ToList();
+
+                    if (cpfsRepetidos.Any())
+                        return Json($"Não se pode cadastrar CPFs repetidos para os beneficiários");
+                }
+
+                model?.Beneficiarios?.ForEach(b => boBeneficiario.Alterar(new Beneficiario
                 {
                     Id = b.Id,
                     CPF = b.CPF,
