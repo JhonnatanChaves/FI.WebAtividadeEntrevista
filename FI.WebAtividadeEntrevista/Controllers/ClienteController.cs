@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using FI.WebAtividadeEntrevista.Models;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -26,6 +27,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
             
             if (!this.ModelState.IsValid)
             {
@@ -43,7 +45,19 @@ namespace WebAtividadeEntrevista.Controllers
                 {
                     Response.StatusCode = 409;
 
-                    return Json("CPF já possui cadastro!");
+                    return Json("CPF do cliente já possui cadastro!");
+                }
+
+                if (model?.Beneficiarios.Count > 0)
+                {
+                    var cpfsRepetidos = model.Beneficiarios?
+                        .GroupBy(b => b.CPF)
+                        .Where(e => e.Count() > 1)
+                        .Select(g => g.Key)
+                        .ToList();
+
+                    if(cpfsRepetidos.Any())
+                        return Json($"Não se pode cadastrar CPFs repetidos para os beneficiários");
                 }
                 
                 model.Id = bo.Incluir(new Cliente()
@@ -60,7 +74,17 @@ namespace WebAtividadeEntrevista.Controllers
                     CPF = model.CPF
                 });
 
-           
+                model.Beneficiarios.ForEach(beneficiario =>
+                {
+                    boBeneficiario.Incluir(new Beneficiario
+                    {
+                        Nome = beneficiario.Nome,
+                        CPF = beneficiario.CPF,
+                        IdCliente = model.Id
+                    });
+                });
+
+
                 return Json("Cadastro efetuado com sucesso");
             }
         }
@@ -114,6 +138,23 @@ namespace WebAtividadeEntrevista.Controllers
             Cliente cliente = bo.Consultar(id);
             Models.ClienteModel model = null;
 
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+            var beneficiariosPorIdCliente = boBeneficiario.Consultar(id);
+
+            List<BeneficiairoModel> listaBeneficiarios = new List<BeneficiairoModel>();
+
+            beneficiariosPorIdCliente.ForEach(b => 
+                listaBeneficiarios.Add
+                (
+                    new BeneficiairoModel
+                    {
+                        Id = b.Id,
+                        CPF = b.CPF,
+                        Nome = b.Nome,
+                        IdCliente = cliente.Id,
+                    }
+                ));
+
             if (cliente != null)
             {
                 model = new ClienteModel()
@@ -128,7 +169,8 @@ namespace WebAtividadeEntrevista.Controllers
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
                     Telefone = cliente.Telefone,
-                    CPF = cliente.CPF
+                    CPF = cliente.CPF,
+                    Beneficiarios = listaBeneficiarios
                 };            
             }
 

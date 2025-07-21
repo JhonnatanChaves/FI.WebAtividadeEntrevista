@@ -1,4 +1,5 @@
-﻿using FI.WebAtividadeEntrevista.Shared;
+﻿using FI.WebAtividadeEntrevista.Models;
+using FI.WebAtividadeEntrevista.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -74,6 +75,8 @@ namespace WebAtividadeEntrevista.Models
         [Required]        
         [CustomValidation(typeof(VerificaCPF), nameof(VerificaCPF.ValidarCPF))]
         public string CPF { get; set; }
+
+        public List<BeneficiairoModel> Beneficiarios { get; set; }
 
     }    
 }
