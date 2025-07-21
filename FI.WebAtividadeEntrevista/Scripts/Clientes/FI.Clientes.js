@@ -61,8 +61,8 @@
         var beneficiarios = [];
 
         $('#tabelaBeneficiarios tbody tr').each(function () {
-            var nome = $(this).find('.nome-beneficiario').text().trim();
-            var cpf = $(this).find('.cpf-beneficiario').text().trim();
+            var nome = $(this).find('.input-nome').val().trim();
+            var cpf = $(this).find('.input-cpf').val().trim();
 
             if (nome && cpf) {
                 beneficiarios.push({
@@ -101,6 +101,8 @@
                 $('#tabelaBeneficiarios tbody').empty();
             }
         });
+
+        console.log(beneficiarios); 
     });
 
 });

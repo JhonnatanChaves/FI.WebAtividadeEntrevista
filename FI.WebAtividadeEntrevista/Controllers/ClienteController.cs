@@ -48,7 +48,7 @@ namespace WebAtividadeEntrevista.Controllers
                     return Json("CPF do cliente já possui cadastro!");
                 }
 
-                if (model?.Beneficiarios.Count > 0)
+                if (model?.Beneficiarios?.Count > 0)
                 {
                     var cpfsRepetidos = model.Beneficiarios?
                         .GroupBy(b => b.CPF)
@@ -74,7 +74,7 @@ namespace WebAtividadeEntrevista.Controllers
                     CPF = model.CPF
                 });
 
-                model.Beneficiarios.ForEach(beneficiario =>
+                model?.Beneficiarios?.ForEach(beneficiario =>
                 {
                     boBeneficiario.Incluir(new Beneficiario
                     {
@@ -93,6 +93,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Alterar(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
        
             if (!this.ModelState.IsValid)
             {
@@ -126,6 +127,14 @@ namespace WebAtividadeEntrevista.Controllers
                     Telefone = model.Telefone,
                     CPF = model.CPF
                 });
+
+                model?.Beneficiarios?.ForEach(b => boBeneficiario.Incluir(new Beneficiario
+                {
+                    Id = b.Id,
+                    CPF = b.CPF,
+                    Nome = b.Nome,
+                    IdCliente = b.IdCliente
+                }));
                                
                 return Json("Cadastro alterado com sucesso");
             }
